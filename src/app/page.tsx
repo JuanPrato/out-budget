@@ -1,20 +1,31 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Header from "./Header";
-import { get, getDatabase, ref } from "firebase/database";
 import Main from "./Main";
-import { use } from "react";
-import { app } from "@/utils/firebase";
+import { useSession } from "@/hook/useSession";
 
 export default function Home() {
 
-  const db = getDatabase(app);
+  const { session, profile, updateCurrent } = useSession();
+  const router = useRouter();
 
-  const profileRef = ref(db, "juan/");
-  const data = use(get(profileRef));
+  if (!session) {
+    console.log("not session");
+    router.push("/login");
+    return;
+  }
+
+  if (!profile) {
+    console.log("not profile");
+    router.push("/profile");
+    return;
+  }
 
   return (
     <>
       <Header />
-      <Main initialValues={data.val()} />
+      <Main values={{ session, ...profile }} updateCurrent={updateCurrent} />
     </>
   )
 }
