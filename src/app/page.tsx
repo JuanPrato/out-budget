@@ -1,7 +1,8 @@
 import Header from "./Header";
 import { initializeApp } from "firebase/app";
-import { get, getDatabase, onValue, ref } from "firebase/database";
+import { get, getDatabase, ref } from "firebase/database";
 import Main from "./Main";
+import { use } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXtKvp-_QJa9crBuLbfa85-Cx3CM26MC0",
@@ -14,12 +15,12 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-export default async function Home() {
+export default function Home() {
 
   const db = getDatabase(app);
 
   const profileRef = ref(db, "juan/");
-  const data = await get(profileRef);
+  const data = use(get(profileRef));
 
   return (
     <>
