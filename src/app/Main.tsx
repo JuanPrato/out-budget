@@ -1,28 +1,40 @@
+"use client"
+
+import { app } from "@/utils/firebase";
 import Glass from "./Glass";
-import { getDatabase, ref, update } from "firebase/database";
-import { app } from "./page";
-import { revalidatePath } from "next/cache";
+import { getDatabase, onValue, ref, update } from "firebase/database";
+import { useEffect, useState } from "react";
 
 export default function Main({ initialValues: { current, total } }: { initialValues: { current: number, total: number } }) {
 
-  async function updateCurrent() {
-    "use server";
+  const db = getDatabase(app);
 
-    const db = getDatabase(app);
+  async function updateCurrent(change: number) {
+
+    if (change === 0) return;
+
     const profileRef = ref(db, "juan");
-    await update(profileRef, { current: current - 2500, total });
-    revalidatePath("/")
+    await update(profileRef, { current: change, total });
   }
 
+  const [value, setValue] = useState(current);
+
+  useEffect(() => {
+    const profileRef = ref(db, "juan");
+    const s = onValue(profileRef, (sp) => {
+      setValue(sp.val().current);
+    });
+    return () => s();
+  }, []);
+
   return (
-    <main className='flex flex-col gap-4 bg-primary h-screen w-screen'>
-      <div className='relative w-full flex flex-col justify-end max-w-[450px] mx-auto'>
-        <Glass percentage={Math.ceil((current / total) * 100)} current={current} />
+    <main className='flex flex-col bg-primary grow py-5'>
+      <div className='relative w-full max-w-[450px] mx-auto'>
+        <Glass percentage={Math.ceil((value / total) * 100)} current={value} />
       </div>
-      <div className="p-10 text-center">
-        <form action={updateCurrent}>
-          <button className="bg-secondary p-5 rounded-xl text-bold text-white">NUEVO GASTO</button>
-        </form>
+      <div className="p-10 text-center flex gap-3">
+        <button className="bg-secondary p-5 rounded-xl text-bold text-white" onClick={() => updateCurrent(value - 2500)}>NUEVO GASTO</button>
+        <button className="bg-secondary p-5 rounded-xl text-bold text-white" onClick={() => updateCurrent(25000)}>REINCIAR GASTO</button>
       </div>
     </main>
   );

@@ -1,3 +1,4 @@
+import { twMerge } from 'tailwind-merge';
 import './globals.css'
 import { Comfortaa } from 'next/font/google'
 
@@ -15,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={comfortaa.className}>{children}</body>
+      <body className={twMerge(comfortaa.className, "h-screen w-screen overflow-hidden flex flex-col")}>{children}</body>
     </html>
   )
 }
