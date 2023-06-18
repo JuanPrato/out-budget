@@ -23,10 +23,12 @@ export default function Home() {
     }
   }, []);
 
+  if (!session || !profile) return;
+
   return (
     <>
       <Header />
-      <Main values={{ session: session!, current: profile!.current, total: profile!.total }} updateCurrent={updateCurrent} />
+      <Main values={{ session, ...profile }} updateCurrent={updateCurrent} />
     </>
   )
 }
