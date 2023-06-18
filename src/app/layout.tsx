@@ -1,7 +1,7 @@
 import './globals.css'
 import { Comfortaa } from 'next/font/google'
 
-const comfortaa = Comfortaa({ subsets: ['latin'] })
+const comfortaa = Comfortaa({ subsets: ['latin'], preload: true });
 
 export const metadata = {
   title: 'Create Next App',

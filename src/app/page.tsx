@@ -1,29 +1,30 @@
-"use client";
-
-import { useState } from "react";
 import Header from "./Header";
-import Glass from "./Glass";
+import { initializeApp } from "firebase/app";
+import { get, getDatabase, onValue, ref } from "firebase/database";
+import Main from "./Main";
 
-const TOTAL: number = 25000;
+const firebaseConfig = {
+  apiKey: "AIzaSyDXtKvp-_QJa9crBuLbfa85-Cx3CM26MC0",
+  authDomain: "our-budget-42b45.firebaseapp.com",
+  projectId: "our-budget-42b45",
+  storageBucket: "our-budget-42b45.appspot.com",
+  messagingSenderId: "130177419419",
+  appId: "1:130177419419:web:57efb90ae4966cee089e3e"
+};
 
-export default function Home() {
+export const app = initializeApp(firebaseConfig);
 
-  const [current, setCurrent] = useState<number>(TOTAL);
+export default async function Home() {
 
-  const newValue = () => {
-    if (current === 0) return;
-    setCurrent((c) => c - 2500);
-  }
+  const db = getDatabase(app);
+
+  const profileRef = ref(db, "juan/");
+  const data = await get(profileRef);
 
   return (
-    <main className='flex flex-col gap-4 bg-primary h-screen w-screen'>
+    <>
       <Header />
-      <div className='relative w-full flex flex-col justify-end max-w-[450px] mx-auto'>
-        <Glass percentage={Math.ceil((current / TOTAL) * 100)} current={current} />
-      </div>
-      <div className="p-10 text-center">
-        <button className="bg-secondary p-5 rounded-xl text-bold text-white" onClick={newValue}>NUEVO GASTO</button>
-      </div>
-    </main>
+      <Main initialValues={data.val()} />
+    </>
   )
 }
