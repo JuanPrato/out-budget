@@ -19,6 +19,7 @@ const BGS = {
 function getBudgetClasses(percentage: number) {
 
   let bg: string;
+  const showP: number = Math.ceil(percentage / 10) * 10;
 
   if (percentage <= BG_PERCETAGES.DEAD) {
     bg = BGS[BG_PERCETAGES.DEAD];
@@ -30,7 +31,7 @@ function getBudgetClasses(percentage: number) {
     bg = BGS[BG_PERCETAGES.GOOD];
   }
 
-  return `before:bottom-[${percentage}%] after:bottom-[${percentage}%] bg-${bg}`
+  return `before:bottom-[${showP}%] after:bottom-[${showP}%] bg-${bg}`
 
 }
 
