@@ -4,28 +4,29 @@ import { useRouter } from "next/navigation";
 import Header from "./Header";
 import Main from "./Main";
 import { useSession } from "@/hook/useSession";
+import { useEffect } from "react";
 
 export default function Home() {
 
   const { session, profile, updateCurrent } = useSession();
   const router = useRouter();
 
-  if (!session) {
-    console.log("not session");
-    router.push("/login");
-    return;
-  }
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
 
-  if (!profile) {
-    console.log("not profile");
-    router.push("/profile");
-    return;
-  }
+    if (!profile) {
+      router.push("/profile");
+      return;
+    }
+  }, []);
 
   return (
     <>
       <Header />
-      <Main values={{ session, ...profile }} updateCurrent={updateCurrent} />
+      <Main values={{ session: session!, current: profile!.current, total: profile!.total }} updateCurrent={updateCurrent} />
     </>
   )
 }
