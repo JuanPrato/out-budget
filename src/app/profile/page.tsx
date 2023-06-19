@@ -3,17 +3,20 @@
 import { useRouter } from "next/navigation";
 import { saveTotal } from "./actions";
 import { useSession } from "@/hook/useSession";
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 
 export default function SetValues() {
 
   const { session, profile, updateProfile } = useSession();
   const router = useRouter();
 
-  if (!session) {
-    router.push("/");
-    return;
-  }
+  useEffect(() => {
+    if (!session) {
+      router.push("/");
+    }
+  }, []);
+
+  if (!session) return;
 
   async function onSubtmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,7 +25,7 @@ export default function SetValues() {
     const username = formData.get("username")?.valueOf() as string | undefined;
     const linked = formData.get("linked")?.valueOf() as string | undefined;
 
-    if (isNaN(total) || !username || !linked) {
+    if (isNaN(total) || !username) {
       return;
     }
 
