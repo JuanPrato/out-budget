@@ -16,6 +16,7 @@ import {
   equalTo,
   child,
   update,
+  onValue,
 } from "firebase/database";
 import { useEffect, useState } from "react";
 
@@ -36,7 +37,8 @@ export function useSession() {
   const [profile, setProfile] = useState<Profile | null>(profileS);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    let sp: any;
+    const s = onAuthStateChanged(auth, async (user) => {
       setSession(user);
       userS = user;
       if (!user) {
@@ -46,21 +48,26 @@ export function useSession() {
       const db = getDatabase(app);
 
       const profileRef = ref(db, `${user.uid}`);
-      const data = await get(profileRef);
-      const val = data.val() as Profile;
-      setProfile(val);
-      if (val.linked) {
-        const linkedProfileRef = ref(db);
-        const users: { [key: string]: Profile } = (
-          await get(linkedProfileRef)
-        ).val();
-        val.linkProfile = Object.values(users).find(
-          (u) => u.username === val.linked
-        );
-      }
-      setProfile({ ...val });
-      profileS = { ...val };
+      sp = onValue(profileRef, async (data) => {
+        const profile = data.val() as Profile;
+        setProfile(profile);
+        if (profile.linked) {
+          const linkedProfileRef = ref(db);
+          const users: { [key: string]: Profile } = (
+            await get(linkedProfileRef)
+          ).val();
+          profile.linkProfile = Object.values(users).find(
+            (u) => u.username === profile.linked
+          );
+        }
+        setProfile({ ...profile });
+        profileS = { ...profile };
+      });
     });
+    return () => {
+      s && s();
+      sp && sp();
+    };
   }, []);
 
   async function signIn(email: string, password: string) {
