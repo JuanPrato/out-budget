@@ -6,7 +6,9 @@
   .water {
     overflow: hidden;
     position: relative;
-    transition: background-color .5s ease-in-out;
+    background-size: 300% 300%;
+    transition: all .5s ease-in-out;
+    animation: water-anim 5s linear infinite;
   }
 
   .water::before {
@@ -32,6 +34,12 @@
     transition: bottom .5s ease-in-out;
   }
 
+  .glassShadow {
+    box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
+    -webkit-box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
+    -moz-box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
+  }
+
   @keyframes anim {
     0% {
       transform: rotate(0deg);
@@ -41,10 +49,18 @@
     }
   }
 
-  .glassShadow {
-    box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
-    -webkit-box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
-    -moz-box-shadow: -33px 31px 94px -1px rgba(141,121,209,0.69) inset;
+  .spend {
+    animation: spendA 2.5s linear forwards;
+  }
+
+  @keyframes spendA {
+    0% {
+      transform: translate(0);
+    }
+    100% {
+      transform: translate(0, 50px);
+      opacity: 0%;
+    }
   }
 
 }
