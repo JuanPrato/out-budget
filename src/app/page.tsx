@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 export default function Home() {
 
-  const { session, profile, updateCurrent } = useSession();
+  const { session, profile, updateProfile } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <Main values={{ session, ...profile }} updateCurrent={updateCurrent} />
+      <Main values={{ session, ...profile }} updateCurrent={(current: number) => updateProfile({ current })} />
     </>
   )
 }

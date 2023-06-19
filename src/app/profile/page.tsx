@@ -1,14 +1,13 @@
 "use client";
 
-import app from "@/firebase/config";
-import { getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { saveTotal } from "./actions";
 import { useSession } from "@/hook/useSession";
+import { FormEvent } from "react";
 
 export default function SetValues() {
 
-  const { session, profile } = useSession();
+  const { session, profile, updateProfile } = useSession();
   const router = useRouter();
 
   if (!session) {
@@ -16,9 +15,25 @@ export default function SetValues() {
     return;
   }
 
+  async function onSubtmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const total = Number(formData.get("total")?.valueOf());
+    const username = formData.get("username")?.valueOf() as string | undefined;
+    const linked = formData.get("linked")?.valueOf() as string | undefined;
+
+    if (isNaN(total) || !username || !linked) {
+      return;
+    }
+
+    await updateProfile({
+      total, username, linked
+    });
+  }
+
   return (
     <div className="h-full w-full bg-primary grid place-items-center">
-      <form className="p-5 bg-secondary rounded-xl text-white" action={saveTotal}>
+      <form className="p-5 bg-secondary rounded-xl text-white" onSubmit={onSubtmit}>
         <button onClick={() => router.push("/")} type="button">⬅️</button>
         <label className="font-bold text-xl my-2 block">
           TOTAL

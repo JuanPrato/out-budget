@@ -19,9 +19,12 @@ const BGS = {
 function getBudgetClasses(percentage: number) {
 
   let bg: string;
-  const showP: number = Math.ceil(percentage / 10) * 10;
+  const aux = Math.ceil(percentage / 10) * 10;
+  const showP: number = aux < 0 ? 100 : aux;
 
-  if (percentage <= BG_PERCETAGES.DEAD) {
+  if (percentage < 0) {
+    bg = BGS[BG_PERCETAGES.DANGER]
+  } else if (percentage <= BG_PERCETAGES.DEAD) {
     bg = BGS[BG_PERCETAGES.DEAD];
   } else if (percentage <= BG_PERCETAGES.DANGER) {
     bg = BGS[BG_PERCETAGES.DANGER];
@@ -40,7 +43,7 @@ export default function Glass({ percentage, current }: { percentage: number, cur
   return (
     <div className={twMerge('w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass overflow-hidden glassShadow flex flex-col justify-end')}>
       <div className={twMerge('h-[150%] water bg-good before:bg-glassBack before:bg-opacity-30 after:bg-glassBack', getBudgetClasses(percentage))}>
-        <h3 className='z-10 text-5xl text-white absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl' > {f.format(current)}</h3>
+        <h3 className='z-10 text-5xl text-black absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl' > {f.format(current)}</h3>
       </div>
     </div>
   )

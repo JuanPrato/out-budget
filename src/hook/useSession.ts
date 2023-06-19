@@ -1,3 +1,4 @@
+import { sessionContext } from "@/firebase/Context";
 import app from "@/firebase/config";
 import {
   User,
@@ -8,17 +9,8 @@ import {
   signInWithEmailAndPassword,
   signOut as signOutFirebase,
 } from "firebase/auth";
-import {
-  getDatabase,
-  ref,
-  get,
-  query,
-  equalTo,
-  child,
-  update,
-  onValue,
-} from "firebase/database";
-import { useEffect, useState } from "react";
+import { getDatabase, ref, get, update, onValue } from "firebase/database";
+import { useContext, useEffect, useState } from "react";
 
 type Profile = {
   total: number;
@@ -29,18 +21,25 @@ type Profile = {
 };
 
 const auth = getAuth(app);
-let userS: User | null = null;
-let profileS: Profile | null = null;
 
-export function useSession() {
-  const [session, setSession] = useState<User | null>(userS);
-  const [profile, setProfile] = useState<Profile | null>(profileS);
+type Session = User | null;
+
+export type ReturnSessionContext = {
+  session: Session;
+  profile: Profile | null;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  updateProfile: (u: Partial<Profile>) => Promise<void>;
+};
+
+export function useSessionContext(): ReturnSessionContext {
+  const [session, setSession] = useState<Session>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     let sp: any;
     const s = onAuthStateChanged(auth, async (user) => {
       setSession(user);
-      userS = user;
       if (!user) {
         setProfile(null);
         return;
@@ -49,19 +48,19 @@ export function useSession() {
 
       const profileRef = ref(db, `${user.uid}`);
       sp = onValue(profileRef, async (data) => {
-        const profile = data.val() as Profile;
-        setProfile(profile);
-        if (profile.linked) {
+        const profileDB = data.val() as Profile;
+
+        if (profileDB.linked) {
           const linkedProfileRef = ref(db);
           const users: { [key: string]: Profile } = (
             await get(linkedProfileRef)
           ).val();
-          profile.linkProfile = Object.values(users).find(
-            (u) => u.username === profile.linked
+          profileDB.linkProfile = Object.values(users).find(
+            (u) => u.username === profileDB.linked
           );
         }
-        setProfile({ ...profile });
-        profileS = { ...profile };
+
+        setProfile({ ...profileDB });
       });
     });
     return () => {
@@ -79,11 +78,11 @@ export function useSession() {
     await signOutFirebase(auth);
   }
 
-  async function updateCurrent(current: number) {
+  async function updateProfile(profileUpdate: Partial<Profile>) {
     const db = getDatabase(app);
     const profileRef = ref(db, session!.uid);
-    await update(profileRef, { current });
-    setProfile((p) => (p ? { ...p, current } : p));
+    await update(profileRef, profileUpdate);
+    setProfile((p) => (p ? { ...p, ...profileUpdate } : p));
   }
 
   return {
@@ -91,6 +90,16 @@ export function useSession() {
     profile,
     signIn,
     signOut,
-    updateCurrent,
+    updateProfile,
   };
+}
+
+export function useSession() {
+  const session = useContext(sessionContext);
+
+  if (!session) {
+    throw new Error("Invalid invocation");
+  }
+
+  return session;
 }
