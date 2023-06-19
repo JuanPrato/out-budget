@@ -39,9 +39,9 @@ export default function Glass({ percentage, current }: { percentage: number, cur
 
   return (
     <div className={twMerge('w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass overflow-hidden glassShadow flex flex-col justify-end')}>
-      <div className={twMerge('h-[150%] water bg-good before:bg-glassBack before:bg-opacity-30 after:bg-glassBack', getBudgetClasses(percentage))} >
+      <div className={twMerge('h-[150%] water bg-good before:bg-glassBack before:bg-opacity-30 after:bg-glassBack', getBudgetClasses(percentage))}>
         <h3 className='z-10 text-5xl text-white absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl' > {f.format(current)}</h3>
-      </div >
-    </div >
+      </div>
+    </div>
   )
 }
