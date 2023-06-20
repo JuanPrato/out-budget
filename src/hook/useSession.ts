@@ -46,15 +46,12 @@ export function useSessionContext(): ReturnSessionContext {
       }
       const db = getDatabase(app);
 
-      const profileRef = ref(db, `${user.uid}`);
-      sp = onValue(profileRef, async (data) => {
-        const profileDB = data.val() as Profile;
+      const profileRef = ref(db);
+      sp = onValue(profileRef, async (usersDB) => {
+        const profileDB = usersDB.child(user.uid).val() as Profile;
 
-        if (profileDB.linked) {
-          const linkedProfileRef = ref(db);
-          const users: { [key: string]: Profile } = (
-            await get(linkedProfileRef)
-          ).val();
+        if (profileDB?.linked) {
+          const users: { [key: string]: Profile } = usersDB.val();
           profileDB.linkProfile = Object.values(users).find(
             (u) => u.username === profileDB.linked
           );
