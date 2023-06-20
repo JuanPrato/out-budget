@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession } from "@/hook/useSession";
 import { twMerge } from "tailwind-merge";
+import Image from "next/image";
 
 enum BG_PERCETAGES {
   DEAD = 10,
@@ -46,14 +47,17 @@ export default function Header() {
     <header className="bg-secondary">
       <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto pt-2">
         <Link
-          className="bg-primary p-5 rounded-xl text-bold text-white text-center"
+          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center"
           href={"/profile"}
-        >PERFIL</Link>
-        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white">PRESUPUESTO</h1>
+        >
+          <Image src="/profile.svg" height={25} width={25} alt="profile" className="inline" />
+          <span className="hidden sm:inline">PERFIL</span>
+        </Link>
+        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white flex justify-center gap-4 items-center">PRESUPUESTO <Image alt="logo" src="/logo3.png" width={36} height={36} className="inline" /></h1>
         <button
           onClick={signOut}
-          className="bg-primary p-5 rounded-xl text-bold text-white"
-        >SALIR</button>
+          className="bg-primary p-5 rounded-xl text-bold text-white flex items-center gap-2 justify-center"
+        ><Image src="/exit.svg" height={25} width={25} alt="profile" /><span className="hidden sm:inline">SALIR</span></button>
       </div>
       {
         !!profile?.linkProfile && (
