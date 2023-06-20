@@ -44,12 +44,12 @@ export default function Header() {
 
   return (
     <header className="bg-secondary">
-      <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto">
+      <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto pt-2">
         <Link
           className="bg-primary p-5 rounded-xl text-bold text-white text-center"
           href={"/profile"}
         >PERFIL</Link>
-        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white border-b">PRESUPUESTO</h1>
+        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white">PRESUPUESTO</h1>
         <button
           onClick={signOut}
           className="bg-primary p-5 rounded-xl text-bold text-white"
