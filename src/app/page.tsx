@@ -21,9 +21,9 @@ export default function Home() {
       router.push("/profile");
       return;
     }
-  }, []);
+  }, [router, session, profile]);
 
-  if (!session || !profile) return;
+  if (!session || !profile) return <div className="h-screen w-screen overflow-hidden bg-primary"></div>;
 
   return (
     <>
