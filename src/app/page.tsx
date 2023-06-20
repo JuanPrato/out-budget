@@ -18,7 +18,9 @@ export default function Home() {
     }
 
     if (!profile) {
-      router.push("/profile");
+      const p = new URLSearchParams();
+      p.set("new", "true");
+      router.push(`/profile?${p.toString()}`);
       return;
     }
   }, [router, session, profile]);
