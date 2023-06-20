@@ -64,7 +64,7 @@ export function useSessionContext(): ReturnSessionContext {
 
         if (profileDB?.linked) {
           const userLinkedRef = query(
-            child(ref(db), "/"),
+            ref(db),
             orderByChild("username"),
             equalTo(profileDB.linked)
           );
@@ -104,13 +104,14 @@ export function useSessionContext(): ReturnSessionContext {
 
     if (profileUpdate.username) {
       const posible = query(
-        child(ref(db), "/"),
+        ref(db),
         orderByChild("username"),
         equalTo(profileUpdate.username)
       );
       const user = (await get(posible)).val();
-      if (user[session!.uid] === undefined) {
-        throw new Error("used username");
+      const q = Object.keys(user).length;
+      if (q !== 0 && user[session!.uid] === undefined) {
+        throw new Error("El usuario utilizado ya esta en uso");
       }
     }
 
