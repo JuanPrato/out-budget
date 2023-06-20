@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { saveTotal } from "./actions";
 import { useSession } from "@/hook/useSession";
 import { FormEvent, useEffect } from "react";
 
@@ -32,6 +31,8 @@ export default function SetValues() {
     await updateProfile({
       total, username, linked
     });
+
+    router.push("/");
   }
 
   return (
@@ -56,7 +57,7 @@ export default function SetValues() {
           USUARIO LINKEADO
           <input type="text" placeholder="gloria@gloria.com" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
         </label>
-        <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">GUARDAR</button>
+        <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">GUARDAR Y CONTINUAR</button>
       </form>
     </div>
   )
