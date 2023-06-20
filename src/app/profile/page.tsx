@@ -37,7 +37,7 @@ export default function SetValues() {
   return (
     <div className="h-full w-full bg-primary grid place-items-center">
       <form className="p-5 bg-secondary rounded-xl text-white" onSubmit={onSubtmit}>
-        <button onClick={() => router.push("/")} type="button">⬅️</button>
+        <button onClick={() => router.push("/")} type="button" className="bg-warning text-black px-2 py-1 rounded-xl font-bold ">ATRAS</button>
         <label className="font-bold text-xl my-2 block">
           TOTAL
           <input type="text" placeholder="1500" className="p-2 rounded-lg font-semibold block text-black" name="total" defaultValue={profile?.total} />
