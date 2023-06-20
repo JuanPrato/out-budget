@@ -3,13 +3,24 @@ import app from "@/firebase/config";
 import {
   User,
   browserLocalPersistence,
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   setPersistence,
   signInWithEmailAndPassword,
   signOut as signOutFirebase,
 } from "firebase/auth";
-import { getDatabase, ref, get, update, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  update,
+  onValue,
+  get,
+  equalTo,
+  orderByChild,
+  query,
+  child,
+} from "firebase/database";
 import { useContext, useEffect, useState } from "react";
 
 type Profile = {
@@ -27,6 +38,7 @@ type Session = User | null;
 export type ReturnSessionContext = {
   session: Session;
   profile: Profile | null;
+  register: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (u: Partial<Profile>) => Promise<void>;
@@ -46,18 +58,25 @@ export function useSessionContext(): ReturnSessionContext {
       }
       const db = getDatabase(app);
 
-      const profileRef = ref(db);
-      sp = onValue(profileRef, async (usersDB) => {
-        const profileDB = usersDB.child(user.uid).val() as Profile;
+      const profileRef = ref(db, user.uid);
+      sp = onValue(profileRef, async (userDB) => {
+        const profileDB = userDB.val() as Profile;
 
         if (profileDB?.linked) {
-          const users: { [key: string]: Profile } = usersDB.val();
-          profileDB.linkProfile = Object.values(users).find(
-            (u) => u.username === profileDB.linked
+          const userLinkedRef = query(
+            child(ref(db), "/"),
+            orderByChild("username"),
+            equalTo(profileDB.linked)
           );
+          onValue(userLinkedRef, (userLinked) => {
+            profileDB.linkProfile =
+              (Object.values(userLinked.val())[0] as Profile) || undefined;
+            if (!profileDB.linkProfile) return;
+            setProfile({ ...profileDB });
+          });
         }
 
-        setProfile({ ...profileDB });
+        setProfile(profileDB && { ...profileDB });
       });
     });
     return () => {
@@ -65,6 +84,10 @@ export function useSessionContext(): ReturnSessionContext {
       sp && sp();
     };
   }, []);
+
+  async function register(email: string, password: string) {
+    await createUserWithEmailAndPassword(auth, email, password);
+  }
 
   async function signIn(email: string, password: string) {
     await setPersistence(auth, browserLocalPersistence);
@@ -78,6 +101,19 @@ export function useSessionContext(): ReturnSessionContext {
   async function updateProfile(profileUpdate: Partial<Profile>) {
     const db = getDatabase(app);
     const profileRef = ref(db, session!.uid);
+
+    if (profileUpdate.username) {
+      const posible = query(
+        child(ref(db), "/"),
+        orderByChild("username"),
+        equalTo(profileUpdate.username)
+      );
+      const user = (await get(posible)).val();
+      if (user[session!.uid] === undefined) {
+        throw new Error("used username");
+      }
+    }
+
     await update(profileRef, profileUpdate);
     setProfile((p) => (p ? { ...p, ...profileUpdate } : p));
   }
@@ -85,6 +121,7 @@ export function useSessionContext(): ReturnSessionContext {
   return {
     session,
     profile,
+    register,
     signIn,
     signOut,
     updateProfile,

@@ -1,21 +1,21 @@
 "use client";
 
-import app from "@/firebase/config";
 import { useSession } from "@/hook/useSession";
-import { getAuth } from "firebase/auth"
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
-
-const auth = getAuth(app);
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 export default function LogIn() {
 
-  const { session, signIn } = useSession();
+  const { session, signIn, register } = useSession();
   const router = useRouter();
+  const [isRegister, setIsRegister] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
 
-  if (!!session) {
-    router.push("/");
-  }
+  useEffect(() => {
+    if (!!session) {
+      router.push("/");
+    }
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,13 +28,27 @@ export default function LogIn() {
       return;
     }
 
-    await signIn(email, password);
-    router.push("/");
+    try {
+      if (isRegister) {
+        await register(email, password);
+        setIsRegister(false);
+        form.current?.reset();
+      } else {
+        await signIn(email, password);
+        router.push("/");
+      }
+    } catch (e) {
+      return;
+    }
+
   }
 
   return (
     <div className="h-full w-full bg-primary grid place-items-center">
-      <form className="p-5 bg-secondary rounded-xl text-white" onSubmit={onSubmit}>
+      <form
+        className="p-5 bg-secondary rounded-xl text-white"
+        onSubmit={onSubmit}
+        ref={form}>
         <label className="font-bold text-xl my-2 block">
           EMAIL
           <input type="email" placeholder="juan@juan.com" className="p-2 rounded-lg font-semibold block text-black" name="email" />
@@ -43,7 +57,11 @@ export default function LogIn() {
           CONTRASEÑA
           <input type="password" placeholder="cositas" className="p-2 rounded-lg font-semibold block text-black" name="password" />
         </label>
-        <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">LOGIN</button>
+        <button onClick={() => setIsRegister(i => !i)} className="block py-2 text-opacity-80 text-gray-100" type="button">
+          <input type="hidden" checked={isRegister} readOnly />
+          {isRegister ? "Inicia sesion" : "Cuenta nueva?"}
+        </button>
+        <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">{isRegister ? "REGISTRARME" : "INGRESAR"}</button>
       </form>
     </div>
   )
