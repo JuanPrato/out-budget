@@ -1,13 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/hook/useSession";
-import { FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function SetValues() {
 
   const { session, profile, updateProfile } = useSession();
   const router = useRouter();
+  const params = useSearchParams();
+  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     if (!session) {
@@ -25,12 +27,23 @@ export default function SetValues() {
     const linked = formData.get("linked")?.valueOf() as string | undefined;
 
     if (isNaN(total) || !username) {
+      setError("Invalid total or username");
       return;
     }
 
-    await updateProfile({
-      total, username, linked
-    });
+    const newProfile = params.get("new");
+
+    try {
+      await updateProfile({
+        total,
+        username,
+        linked,
+        current: newProfile ? total : undefined
+      });
+    } catch (e) {
+      setError((e as Error).message);
+      return;
+    }
 
     router.push("/");
   }
@@ -55,8 +68,11 @@ export default function SetValues() {
         </label>
         <label className="font-bold text-xl my-2 block">
           USUARIO LINKEADO
-          <input type="text" placeholder="gloria@gloria.com" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
+          <input type="text" placeholder="Gloria" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
         </label>
+        {
+          <p className="text-warning text-lg font-semibold max-w-[14rem]">{error}</p>
+        }
         <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">GUARDAR Y CONTINUAR</button>
       </form>
     </div>
