@@ -53,7 +53,7 @@ export default function Header() {
           <Image src="/profile.svg" height={25} width={25} alt="profile" className="inline" />
           <span className="hidden sm:inline">PERFIL</span>
         </Link>
-        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white flex justify-center gap-4 items-center">PRESUPUESTO <Image alt="logo" src="/logo3.png" width={36} height={36} className="inline" /></h1>
+        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white flex justify-center gap-4 items-center"><span className="hidden md:inline">PRESUPUESTO</span> <Image alt="logo" src="/logo3.png" width={36} height={36} className="inline" /></h1>
         <button
           onClick={signOut}
           className="bg-primary p-5 rounded-xl text-bold text-white flex items-center gap-2 justify-center"
