@@ -58,7 +58,6 @@ export default function LogIn() {
           <input type="password" placeholder="cositas" className="p-2 rounded-lg font-semibold block text-black" name="password" />
         </label>
         <button onClick={() => setIsRegister(i => !i)} className="block py-2 text-opacity-80 text-gray-100" type="button">
-          <input type="hidden" checked={isRegister} readOnly />
           {isRegister ? "Inicia sesion" : "Cuenta nueva?"}
         </button>
         <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">{isRegister ? "REGISTRARME" : "INGRESAR"}</button>
