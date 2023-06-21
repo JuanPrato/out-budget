@@ -2,7 +2,7 @@
 
 import Glass from "./Glass";
 import { User } from "firebase/auth";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef } from "react";
 import { IncomeButton, IncomeInput } from "./Inputs";
 
 export default function Main({
@@ -14,7 +14,7 @@ export default function Main({
 }: { values: { session: User, current: number, total: number }, updateCurrent: (current: number) => Promise<void> }) {
 
   const form = useRef<HTMLFormElement>(null);
-  const [spend, setSpend] = useState<{ spend: number } | undefined>(undefined);
+  const spend = useRef<number | undefined>(undefined);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,21 +26,21 @@ export default function Main({
       return;
     }
 
-    const multiplier = isIncome ? -1 : 1;
+    const multiplier = isIncome ? 1 : -1;
+    spend.current = q * multiplier;
     await updateCurrent(current - (q * multiplier));
     form.current?.reset();
-    setSpend({ spend: q * multiplier });
   }
 
   async function onReset() {
+    spend.current = current - total;
     await updateCurrent(total);
-    setSpend({ spend: current - total });
   }
 
   async function onUndo() {
-    const correction = spend!.spend * -1;
+    const correction = spend.current! * -1;
+    spend.current = correction;
     await updateCurrent(current - correction);
-    setSpend({ spend: correction });
   }
 
   return (
@@ -49,7 +49,7 @@ export default function Main({
         <Glass
           percentage={Math.ceil((current / total) * 100)}
           current={current}
-          spend={spend}
+          spend={spend.current}
         />
       </div>
       <div className="pt-10 px-5 mx-auto max-w-[600px] w-full flex flex-col gap-3">

@@ -37,7 +37,7 @@ function getBudgetClasses(percentage: number) {
 
 }
 
-export default function Glass({ percentage, current, spend }: { percentage: number, current: number, spend: { spend: number } | undefined }) {
+export default function Glass({ percentage, current, spend }: { percentage: number, current: number, spend: number | undefined }) {
 
   return (
     <div className={twMerge('w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass  overflow-hidden glassShadow flex flex-col justify-end')}>
@@ -47,8 +47,8 @@ export default function Glass({ percentage, current, spend }: { percentage: numb
       {
         spend !== undefined &&
         <p
-          className={twMerge("absolute text-3xl font-semibold top-1/2 left-1/2 z-20 spend", spend.spend <= 0 ? "text-green-700" : "text-red-600")}
-          key={randomBytes(32).toString()}>{f.format(spend.spend * -1)}
+          className={twMerge("absolute text-3xl font-semibold top-1/2 left-1/2 z-20 spend", spend <= 0 ? "text-green-700" : "text-red-600")}
+          key={randomBytes(32).toString()}>{spend * -1 >= 0 ? "" : "-"}{f.format(Math.abs(spend))}
         </p>
       }
     </div>
