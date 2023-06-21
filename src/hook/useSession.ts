@@ -121,7 +121,6 @@ export function useSessionContext(): ReturnSessionContext {
       }
     }
     await update(profileRef, profileUpdate);
-    setProfile((p) => (p ? { ...p, ...profileUpdate } : p));
   }
 
   return {
