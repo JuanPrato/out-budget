@@ -42,18 +42,22 @@ export type ReturnSessionContext = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (u: Partial<Profile>) => Promise<void>;
+  loading: boolean;
 };
 
 export function useSessionContext(): ReturnSessionContext {
   const [session, setSession] = useState<Session>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let sp: any;
     const s = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
       setSession(user);
       if (!user) {
         setProfile(null);
+        setLoading(false);
         return;
       }
       const db = getDatabase(app);
@@ -72,11 +76,13 @@ export function useSessionContext(): ReturnSessionContext {
             profileDB.linkProfile =
               (Object.values(userLinked.val())[0] as Profile) || undefined;
             if (!profileDB.linkProfile) return;
+            setLoading(false);
             setProfile({ ...profileDB });
           });
+        } else {
+          setLoading(false);
+          setProfile(profileDB && { ...profileDB });
         }
-
-        setProfile(profileDB && { ...profileDB });
       });
     });
     return () => {
@@ -109,12 +115,11 @@ export function useSessionContext(): ReturnSessionContext {
         equalTo(profileUpdate.username)
       );
       const user = (await get(posible)).val();
-      const q = Object.keys(user).length;
+      const q = Object.keys(user || {}).length;
       if (q !== 0 && user[session!.uid] === undefined) {
         throw new Error("El usuario utilizado ya esta en uso");
       }
     }
-
     await update(profileRef, profileUpdate);
     setProfile((p) => (p ? { ...p, ...profileUpdate } : p));
   }
@@ -126,6 +131,7 @@ export function useSessionContext(): ReturnSessionContext {
     signIn,
     signOut,
     updateProfile,
+    loading,
   };
 }
 
