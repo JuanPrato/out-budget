@@ -18,7 +18,7 @@ export function IncomeInput() {
   return (
     <div className="flex w-full col-span-6 bg-white rounded-lg">
       <span className="min-w-[50px] text-2xl grid place-items-center font-bold">$</span>
-      <input type="text" placeholder="2500" name="quantity" className="p-3 text-2xl rounded-lg font-semibold block text-black w-full focus:outline-none" autoComplete="off" />
+      <input type="text" placeholder="2500" name="quantity" className="p-3 text-2xl rounded-lg font-semibold block text-black w-full focus:outline-none" autoComplete="off" inputMode="numeric" />
     </div>
   );
 

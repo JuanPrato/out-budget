@@ -11,6 +11,8 @@ export default function SetValues() {
   const params = useSearchParams();
   const [error, setError] = useState<string | undefined>();
 
+  const newProfile = params.get("new");
+
   useEffect(() => {
     if (!session) {
       router.push("/");
@@ -31,8 +33,6 @@ export default function SetValues() {
       return;
     }
 
-    const newProfile = params.get("new");
-
     try {
       await updateProfile({
         total,
@@ -51,6 +51,7 @@ export default function SetValues() {
   return (
     <div className="h-full w-full bg-primary grid place-items-center">
       <form className="p-5 bg-secondary rounded-xl text-white" onSubmit={onSubtmit}>
+        {newProfile && <legend>Para continuar debes crear un perfil</legend>}
         <button onClick={() => router.push("/")} type="button" className="bg-warning text-black px-2 py-1 rounded-xl font-bold ">ATRAS</button>
         <label className="font-bold text-xl my-2 block">
           TOTAL
@@ -68,7 +69,7 @@ export default function SetValues() {
         </label>
         <label className="font-bold text-xl my-2 block">
           USUARIO LINKEADO
-          <input type="text" placeholder="Gloria" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
+          <input type="text" placeholder="Usuari" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
         </label>
         {
           <p className="text-warning text-lg font-semibold max-w-[14rem]">{error}</p>
