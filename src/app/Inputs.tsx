@@ -15,7 +15,7 @@ export function IncomeButton() {
       {
         value ? "INGRESO" : "EGRESO"
       }
-      <input value={String(value)} type="hidden" name="income" readOnly className="w-[20px] h-[20px]" />
+      <input checked={value} type="checkbox" name="income" readOnly className="hidden" />
     </button>
   );
 }

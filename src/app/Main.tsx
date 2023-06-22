@@ -25,8 +25,8 @@ export default function Main({
     if (isNaN(q) || q === 0) {
       return;
     }
+    const multiplier = isIncome ? -1 : 1;
 
-    const multiplier = isIncome ? 1 : -1;
     spend.current = q * multiplier;
     await updateCurrent(current - (q * multiplier));
     form.current?.reset();
