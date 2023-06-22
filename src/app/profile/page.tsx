@@ -54,11 +54,11 @@ export default function SetValues() {
         {newProfile && <legend>Para continuar debes crear un perfil</legend>}
         <button onClick={() => router.push("/")} type="button" className="bg-warning text-black px-2 py-1 rounded-xl font-bold ">ATRAS</button>
         <label className="font-bold text-xl my-2 block">
-          TOTAL
+          PRESUPUESTO TOTAL
           <input type="text" placeholder="1500" className="p-2 rounded-lg font-semibold block text-black" name="total" defaultValue={profile?.total} />
         </label>
         <label className="font-bold text-xl my-2 block">
-          USUARIO
+          NOMBRE DE USUARIO
           <input
             type="text"
             placeholder="Juan"
@@ -68,8 +68,8 @@ export default function SetValues() {
           />
         </label>
         <label className="font-bold text-xl my-2 block">
-          USUARIO LINKEADO
-          <input type="text" placeholder="Usuari" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
+          COMPAÑERO <span className="text-sm text-gray-300">(opcional)</span>
+          <input type="text" placeholder="Usuario del compañero" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
         </label>
         {
           <p className="text-warning text-lg font-semibold max-w-[14rem]">{error}</p>
