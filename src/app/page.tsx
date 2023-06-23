@@ -38,7 +38,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative grow flex flex-col">
+    <div className="relative grow flex flex-col overflow-y-auto">
       <Header />
       <Main values={{ session, ...profile }} updateCurrent={updateCurrent} showHistory={() => setShowHistory(s => !s)} />
       <History show={showHistory} getHistory={getHistory} onClose={() => setShowHistory(false)} />
