@@ -11,16 +11,16 @@ import {
   signOut as signOutFirebase,
 } from "firebase/auth";
 import {
-  getDatabase,
-  ref,
-  update,
-  onValue,
-  get,
-  equalTo,
-  orderByChild,
+  collection,
+  doc,
+  getFirestore,
+  onSnapshot,
   query,
-  child,
-} from "firebase/database";
+  where,
+  getDocs,
+  updateDoc,
+  addDoc,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 
 type Profile = {
@@ -42,10 +42,12 @@ export type ReturnSessionContext = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (u: Partial<Profile>) => Promise<void>;
+  addHistory: (v: number) => Promise<void>;
   loading: boolean;
 };
 
 export function useSessionContext(): ReturnSessionContext {
+  const [db] = useState(() => getFirestore(app));
   const [session, setSession] = useState<Session>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,25 +62,28 @@ export function useSessionContext(): ReturnSessionContext {
         setLoading(false);
         return;
       }
-      const db = getDatabase(app);
 
-      const profileRef = ref(db, user.uid);
-      sp = onValue(profileRef, async (userDB) => {
-        const profileDB = userDB.val() as Profile;
+      const profileDoc = doc(db, "users", user.uid);
+      sp = onSnapshot(profileDoc, async (userDB) => {
+        const profileDB = userDB.data() as Profile;
 
         if (profileDB?.linked) {
-          const userLinkedRef = query(
-            ref(db),
-            orderByChild("username"),
-            equalTo(profileDB.linked)
+          const userLinkedQuery = query(
+            collection(db, "users"),
+            where("username", "==", profileDB.linked)
           );
-          onValue(userLinkedRef, (userLinked) => {
-            profileDB.linkProfile =
-              (Object.values(userLinked.val())[0] as Profile) || undefined;
-            if (!profileDB.linkProfile) return;
+          const links = await getDocs(userLinkedQuery);
+          if (!links.empty) {
+            const linkedQuery = doc(db, "users", links.docs[0].id);
+            onSnapshot(linkedQuery, (userLinked) => {
+              profileDB.linkProfile = userLinked.data() as Profile;
+              setLoading(false);
+              setProfile({ ...profileDB });
+            });
+          } else {
             setLoading(false);
             setProfile({ ...profileDB });
-          });
+          }
         } else {
           setLoading(false);
           setProfile(profileDB && { ...profileDB });
@@ -105,22 +110,27 @@ export function useSessionContext(): ReturnSessionContext {
   }
 
   async function updateProfile(profileUpdate: Partial<Profile>) {
-    const db = getDatabase(app);
-    const profileRef = ref(db, session!.uid);
+    const profileRef = doc(db, "users", session!.uid);
 
     if (profileUpdate.username) {
       const posible = query(
-        ref(db),
-        orderByChild("username"),
-        equalTo(profileUpdate.username)
+        collection(db, "users"),
+        where("username", "==", profileUpdate.username)
       );
-      const user = (await get(posible)).val();
-      const q = Object.keys(user || {}).length;
-      if (q !== 0 && user[session!.uid] === undefined) {
+      const user = await getDocs(posible);
+      const q = user.size;
+      if (q !== 0 && !user.docs.some((d) => d.id === session?.uid)) {
         throw new Error("El usuario utilizado ya esta en uso");
       }
     }
-    await update(profileRef, profileUpdate);
+    await updateDoc(profileRef, profileUpdate);
+  }
+
+  async function addHistory(value: number) {
+    await addDoc(collection(db, "users", session!.uid, "history"), {
+      value,
+      created_at: new Date(),
+    });
   }
 
   return {
@@ -130,6 +140,7 @@ export function useSessionContext(): ReturnSessionContext {
     signIn,
     signOut,
     updateProfile,
+    addHistory,
     loading,
   };
 }

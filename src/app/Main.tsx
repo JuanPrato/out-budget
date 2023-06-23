@@ -12,7 +12,7 @@ export default function Main({
     total
   },
   updateCurrent
-}: { values: { session: User, current: number, total: number }, updateCurrent: (current: number) => Promise<void> }) {
+}: { values: { session: User, current: number, total: number }, updateCurrent: (current: number, value: number) => Promise<void> }) {
 
   const form = useRef<HTMLFormElement>(null);
   const spend = useRef<number | undefined>(undefined);
@@ -30,19 +30,19 @@ export default function Main({
     const multiplier = isIncome ? -1 : 1;
 
     spend.current = q * multiplier;
-    await updateCurrent(current - (q * multiplier));
+    await updateCurrent(current - (q * multiplier), (q * multiplier));
     form.current?.reset();
   }
 
   async function onReset() {
     spend.current = current - total;
-    await updateCurrent(total);
+    await updateCurrent(total, current - total);
   }
 
   async function onUndo() {
     const correction = spend.current! * -1;
     spend.current = correction;
-    await updateCurrent(current - correction);
+    await updateCurrent(current - correction, correction);
   }
 
   function getAcc() {

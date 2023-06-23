@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export default function Home() {
 
-  const { session, profile, updateProfile, loading } = useSession();
+  const { session, profile, updateProfile, addHistory, loading } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -30,10 +30,15 @@ export default function Home() {
     <Image src="/loading.svg" width={75} height={75} alt="loading svg" className="animate-spin -ml-1 mr-3" />
   </div>;
 
+  async function updateCurrent(current: number, value: number) {
+    await updateProfile({ current });
+    await addHistory(value);
+  }
+
   return (
     <>
       <Header />
-      <Main values={{ session, ...profile }} updateCurrent={(current: number) => updateProfile({ current })} />
+      <Main values={{ session, ...profile }} updateCurrent={updateCurrent} />
     </>
   )
 }
