@@ -16,7 +16,7 @@ export default function Main({
 
   const form = useRef<HTMLFormElement>(null);
   const spend = useRef<number | undefined>(undefined);
-  const [isRemaining, setIsRemaining] = useState<boolean>();
+  const [isRemaining, setIsRemaining] = useState<boolean>(true);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
