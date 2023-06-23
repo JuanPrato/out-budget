@@ -13,7 +13,7 @@ export default function Body({ children }: { children: ReactNode }) {
   const { dark } = useTheme();
 
   return (
-    <body className={twMerge(comfortaa.className, "h-screen w-screen overflow-hidden flex flex-col", dark && "dark")}>
+    <body className={twMerge(comfortaa.className, "h-screen w-screen overflow-hidden flex flex-col", !!dark && "dark")}>
       <SessionProvider>
         {children}
       </SessionProvider>

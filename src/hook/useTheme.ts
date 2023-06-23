@@ -2,9 +2,7 @@ import { themeContext } from "@/app/ThemeContext";
 import { useContext, useEffect, useState } from "react";
 
 export function useThemeContext() {
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("theme", dark ? "dark" : "ligth");
