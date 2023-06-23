@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSession } from "@/hook/useSession";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
-import { Button } from "@/component/Button";
+import { Button } from "@/components/Button";
 
 enum BG_PERCETAGES {
   DEAD = 10,
@@ -46,18 +46,18 @@ export default function Header() {
 
   return (
     <header className="bg-secondary">
-      <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto py-2 h-[75px]">
+      <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto py-2 h-[80px]">
         <Link
-          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center"
+          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center aspect-square md:aspect-auto"
           href={"/profile"}
         >
           <Image src="/profile.svg" height={25} width={25} alt="profile" className="inline" />
           <span className="hidden sm:inline">PERFIL</span>
         </Link>
-        <h1 className="text-center text-4xl font-bold pt-4 pb-2 text-white flex justify-center gap-4 items-center"><span className="hidden md:inline">PRESUPUESTO</span> <Image alt="logo" src="/logo3.png" width={36} height={36} className="inline" /></h1>
+        <h1 className="text-center text-4xl font-bold text-white flex justify-center gap-4 items-center"><span className="hidden md:inline">PRESUPUESTO</span> <Image alt="logo" src="/logo3.png" width={75} height={75} className="inline w-16 h-16" /></h1>
         <Button
           onClick={signOut}
-          className="flex items-center gap-2 justify-center"
+          className="flex items-center gap-2 justify-center aspect-square md:aspect-auto"
         ><Image src="/exit.svg" height={25} width={25} alt="profile" /><span className="hidden sm:inline">SALIR</span></Button>
       </div>
       {

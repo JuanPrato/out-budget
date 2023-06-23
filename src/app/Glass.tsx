@@ -1,7 +1,6 @@
+import { priceF } from "@/utils/formatter";
 import { randomBytes } from "crypto";
 import { twMerge } from "tailwind-merge";
-
-const f = Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" });
 
 enum BG_PERCETAGES {
   DEAD = 10,
@@ -36,18 +35,24 @@ function getBudgetClasses(percentage: number) {
   return `before:bottom-[${showP}%] after:bottom-[${showP}%] bg-${bg}`
 }
 
-export default function Glass({ percentage, current, spend }: { percentage: number, current: number, spend: number | undefined }) {
+interface Props {
+  percentage: number;
+  current: number;
+  spend: { value: number } | undefined;
+}
+
+export default function Glass({ percentage, current, spend }: Props) {
 
   return (
     <div className='w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass  overflow-hidden glassShadow flex flex-col justify-end'>
       <div className={twMerge('h-[150%] water before:bg-glassBack before:bg-opacity-30 after:bg-glassBack', getBudgetClasses(percentage))}>
-        <h3 className={twMerge('z-10 text-5xl font-bold text-black absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl', current < 0 && "text-red-600")} >{f.format(current)}</h3>
+        <h3 className={twMerge('z-10 text-5xl font-bold text-black absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl', current < 0 && "text-red-600")} >{priceF.format(current)}</h3>
       </div>
       {
         spend !== undefined &&
         <p
-          className={twMerge("absolute text-3xl font-semibold top-1/2 left-1/2 z-20 spend", spend <= 0 ? "text-green-700" : "text-red-600")}
-          key={randomBytes(32).toString()}>{spend * -1 >= 0 ? "" : "-"}{f.format(Math.abs(spend))}
+          className={twMerge("absolute text-3xl font-semibold top-1/2 left-1/2 z-20 spend", spend.value <= 0 ? "text-green-700" : "text-red-600")}
+          key={spend.toString()}>{spend.value * -1 >= 0 ? "" : "-"}{priceF.format(Math.abs(spend.value))}
         </p>
       }
     </div >

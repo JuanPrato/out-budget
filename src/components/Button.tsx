@@ -1,9 +1,9 @@
-import { HTMLProps, ReactNode } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface Props {
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   bgColor?: string;
   textColor?: string;

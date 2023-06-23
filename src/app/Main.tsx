@@ -4,7 +4,13 @@ import Glass from "./Glass";
 import { User } from "firebase/auth";
 import { FormEvent, useRef, useState } from "react";
 import { IncomeButton, IncomeInput } from "./Inputs";
-import { Button } from "@/component/Button";
+import { Button } from "@/components/Button";
+
+interface Props {
+  values: { session: User, current: number, total: number };
+  updateCurrent: (current: number, value: number) => Promise<void>;
+  showHistory: () => void;
+}
 
 export default function Main({
   values: {
@@ -13,10 +19,10 @@ export default function Main({
   },
   updateCurrent,
   showHistory
-}: { values: { session: User, current: number, total: number }, updateCurrent: (current: number, value: number) => Promise<void>, showHistory: () => void }) {
+}: Props) {
 
   const form = useRef<HTMLFormElement>(null);
-  const spend = useRef<number | undefined>(undefined);
+  const spend = useRef<{ value: number } | undefined>(undefined);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,19 +35,19 @@ export default function Main({
     }
     const multiplier = isIncome ? -1 : 1;
 
-    spend.current = q * multiplier;
+    spend.current = { value: q * multiplier };
     await updateCurrent(current - (q * multiplier), (q * multiplier));
     form.current?.reset();
   }
 
   async function onReset() {
-    spend.current = current - total;
+    spend.current = { value: current - total };
     await updateCurrent(total, current - total);
   }
 
   async function onUndo() {
-    const correction = spend.current! * -1;
-    spend.current = correction;
+    const correction = spend.current!.value * -1;
+    spend.current = { value: correction };
     await updateCurrent(current - correction, correction);
   }
 
@@ -63,9 +69,9 @@ export default function Main({
         >
           <IncomeInput />
           <IncomeButton />
-          <Button className="col-span-3" bgColor="bg-secondary">NUEVO</Button>
+          <Button className="col-span-3" bgColor="bg-secondary">GUARDAR</Button>
         </form>
-        <Button bgColor="bg-warning" textColor="text-black" onClick={onUndo} disabled={!spend}>DESHACER</Button>
+        <Button bgColor="bg-warning" textColor="text-black" onClick={onUndo} disabled={!spend.current}>DESHACER</Button>
         <Button onClick={onReset} bgColor="bg-danger">REINCIAR GASTOS</Button>
       </div>
     </main>

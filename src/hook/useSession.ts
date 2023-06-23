@@ -20,6 +20,7 @@ import {
   getDocs,
   updateDoc,
   addDoc,
+  orderBy,
 } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 
@@ -35,6 +36,11 @@ const auth = getAuth(app);
 
 type Session = User | null;
 
+export type HistoryItem = {
+  value: number;
+  created_at: Date;
+};
+
 export type ReturnSessionContext = {
   session: Session;
   profile: Profile | null;
@@ -43,6 +49,7 @@ export type ReturnSessionContext = {
   signOut: () => Promise<void>;
   updateProfile: (u: Partial<Profile>) => Promise<void>;
   addHistory: (v: number) => Promise<void>;
+  getHistory: () => Promise<HistoryItem[]>;
   loading: boolean;
 };
 
@@ -54,6 +61,7 @@ export function useSessionContext(): ReturnSessionContext {
 
   useEffect(() => {
     let sp: any;
+    let sh: any;
     const s = onAuthStateChanged(auth, async (user) => {
       setLoading(true);
       setSession(user);
@@ -66,6 +74,12 @@ export function useSessionContext(): ReturnSessionContext {
       const profileDoc = doc(db, "users", user.uid);
       sp = onSnapshot(profileDoc, async (userDB) => {
         const profileDB = userDB.data() as Profile;
+
+        if (!profileDB) {
+          setLoading(false);
+          setProfile(null);
+          return;
+        }
 
         if (profileDB?.linked) {
           const userLinkedQuery = query(
@@ -80,19 +94,17 @@ export function useSessionContext(): ReturnSessionContext {
               setLoading(false);
               setProfile({ ...profileDB });
             });
-          } else {
-            setLoading(false);
-            setProfile({ ...profileDB });
           }
-        } else {
-          setLoading(false);
-          setProfile(profileDB && { ...profileDB });
         }
+
+        setLoading(false);
+        setProfile({ ...profileDB });
       });
     });
     return () => {
       s && s();
       sp && sp();
+      sh && sh();
     };
   }, []);
 
@@ -133,6 +145,23 @@ export function useSessionContext(): ReturnSessionContext {
     });
   }
 
+  async function getHistory() {
+    const historyQuery = query(
+      collection(db, "users", session!.uid, "history"),
+      orderBy("created_at", "desc")
+    );
+
+    return (
+      ((await getDocs(historyQuery)).docs.map((d) => {
+        const data = d.data();
+        return {
+          value: data.value,
+          created_at: data.created_at.toDate(),
+        };
+      }) as HistoryItem[]) || []
+    );
+  }
+
   return {
     session,
     profile,
@@ -141,6 +170,7 @@ export function useSessionContext(): ReturnSessionContext {
     signOut,
     updateProfile,
     addHistory,
+    getHistory,
     loading,
   };
 }
