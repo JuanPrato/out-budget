@@ -44,7 +44,7 @@ interface Props {
 export default function Glass({ percentage, current, spend }: Props) {
 
   return (
-    <div className='w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass  overflow-hidden glassShadow flex flex-col justify-end'>
+    <div className='w-[95%] aspect-square mx-auto rounded-full bg-glass border-[15px] border-borderGlass  overflow-hidden glassShadow flex flex-col justify-end shadow-xl'>
       <div className={twMerge('h-[150%] water before:bg-glassBack before:bg-opacity-30 after:bg-glassBack', getBudgetClasses(percentage))}>
         <h3 className={twMerge('z-10 text-5xl font-bold text-black absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 drop-shadow-xl', current < 0 && "text-red-600")} >{priceF.format(current)}</h3>
       </div>
