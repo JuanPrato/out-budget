@@ -11,7 +11,7 @@ export default function SetValues() {
   const params = useSearchParams();
   const [error, setError] = useState<string | undefined>();
 
-  const newProfile = params.get("new");
+  const newProfile = Boolean(params.get("new"));
 
   useEffect(() => {
     if (!session) {
@@ -39,7 +39,7 @@ export default function SetValues() {
         username,
         linked,
         current: newProfile ? total : undefined
-      });
+      }, newProfile);
       if (newProfile) {
         await addHistory(total);
       }

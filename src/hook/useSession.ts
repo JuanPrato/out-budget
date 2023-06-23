@@ -47,7 +47,7 @@ export type ReturnSessionContext = {
   register: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  updateProfile: (u: Partial<Profile>) => Promise<void>;
+  updateProfile: (u: Partial<Profile>, isNew?: boolean) => Promise<void>;
   addHistory: (v: number) => Promise<void>;
   getHistory: () => Promise<HistoryItem[]>;
   loading: boolean;
@@ -121,7 +121,10 @@ export function useSessionContext(): ReturnSessionContext {
     await signOutFirebase(auth);
   }
 
-  async function updateProfile(profileUpdate: Partial<Profile>) {
+  async function updateProfile(
+    profileUpdate: Partial<Profile>,
+    isNew?: boolean
+  ) {
     const profileRef = doc(db, "users", session!.uid);
 
     if (profileUpdate.username) {
@@ -135,7 +138,12 @@ export function useSessionContext(): ReturnSessionContext {
         throw new Error("El usuario utilizado ya esta en uso");
       }
     }
-    await updateDoc(profileRef, profileUpdate);
+
+    if (isNew) {
+      await addDoc(collection(db, "users"), profileUpdate);
+    } else {
+      await updateDoc(profileRef, profileUpdate);
+    }
   }
 
   async function addHistory(value: number) {
