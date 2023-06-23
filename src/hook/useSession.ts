@@ -21,6 +21,7 @@ import {
   updateDoc,
   addDoc,
   orderBy,
+  setDoc,
 } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 
@@ -140,7 +141,7 @@ export function useSessionContext(): ReturnSessionContext {
     }
 
     if (isNew) {
-      await addDoc(collection(db, "users"), profileUpdate);
+      await setDoc(doc(db, "users", session!.uid), profileUpdate);
     } else {
       await updateDoc(profileRef, profileUpdate);
     }
