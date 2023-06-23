@@ -43,13 +43,14 @@ module.exports = {
       colors: {
         primary: 'var(--primary)',
         secondary: 'var(--secondary)',
-        good: '#3ae374',
-        warning: '#fff200',
-        danger: '#ff3838',
+        good: 'var(--good)',
+        warning: 'var(--warning)',
+        danger: 'var(--danger)',
         dead: '#3d3d3d',
         glass: 'rgb(184 163 242)',
         borderGlass: 'rgb(169 186 244)',
-        glassBack: '#b9a3f3'
+        glassBack: '#b9a3f3',
+        contrast: 'var(--contrast)'
       }
     },
   },

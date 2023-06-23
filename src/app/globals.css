@@ -72,16 +72,33 @@
   --primary-dark: #5758BB;
   --secondary-dark: #1B1464;
 
-  --danger-ligth: "red";
-  --danger-dark: "red";
+  --good-ligth: #3ae374;
+  --good-dark: #009432;
+
+  --warning-ligth: #fff200;
+  --warning-dark: #ffd32a;
+
+  --danger-ligth: #ff3838;
+  --danger-dark: #b71540;
+
+  --contrast-ligth: #000;
+  --contrast-dark: #fff;
 }
 
 body {
   --primary: var(--primary-ligth);
   --secondary: var(--secondary-ligth);
+  --good: var(--good-ligth);
+  --warning: var(--warning-ligth);
+  --danger: var(--danger-ligth);
+  --contrast: var(--contrast-ligth);
 }
 
 body.dark {
   --primary: var(--primary-dark);
   --secondary: var(--secondary-dark);
+  --good: var(--good-dark);
+  --warning: var(--warning-dark);
+  --danger: var(--danger-dark);
+  --contrast: var(--contrast-dark)
 }

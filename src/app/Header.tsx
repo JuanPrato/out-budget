@@ -48,7 +48,7 @@ export default function Header() {
     <header className="bg-secondary">
       <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto p-2">
         <Link
-          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center aspect-square sm:aspect-auto"
+          className="bg-primary p-5 rounded-xl font-bold text-white text-center flex items-center gap-2 justify-center aspect-square sm:aspect-auto"
           href={"/profile"}
         >
           <Image src="/profile.svg" height={25} width={25} alt="profile" className="inline" />
