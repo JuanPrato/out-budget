@@ -2,8 +2,9 @@
 
 import Glass from "./Glass";
 import { User } from "firebase/auth";
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { IncomeButton, IncomeInput } from "./Inputs";
+import { Button } from "@/component/Button";
 
 export default function Main({
   values: {
@@ -15,6 +16,7 @@ export default function Main({
 
   const form = useRef<HTMLFormElement>(null);
   const spend = useRef<number | undefined>(undefined);
+  const [isRemaining, setIsRemaining] = useState<boolean>();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,12 +45,19 @@ export default function Main({
     await updateCurrent(current - correction);
   }
 
+  function getAcc() {
+    if (!isRemaining)
+      return total - current;
+    return current;
+  }
+
   return (
     <main className='flex flex-col bg-primary grow py-5'>
       <div className='relative w-full max-w-[450px] mx-auto'>
+        <Button bgColor="bg-secondary" className="absolute right-0 top-0 w-16 h-16 p-1 text-2xl z-20" onClick={() => setIsRemaining(r => !r)}>{isRemaining ? "🫗" : "🥛"}</Button>
         <Glass
           percentage={Math.ceil((current / total) * 100)}
-          current={current}
+          current={getAcc()}
           spend={spend.current}
         />
       </div>
@@ -60,10 +69,10 @@ export default function Main({
         >
           <IncomeInput />
           <IncomeButton />
-          <button className="bg-secondary p-5 rounded-xl text-bold text-white col-span-3">NUEVO</button>
+          <Button className="col-span-3" bgColor="bg-secondary">NUEVO</Button>
         </form>
-        <button className="bg-warning text-black disabled:bg-opacity-60 p-5 rounded-xl text-bold w-full" onClick={onUndo} disabled={!spend}>DESHACER</button>
-        <button className="bg-danger p-5 rounded-xl text-bold text-white w-full" onClick={onReset}>REINCIAR GASTOS DEL MES</button>
+        <Button bgColor="bg-warning" textColor="text-black" onClick={onUndo} disabled={!spend}>DESHACER</Button>
+        <Button onClick={onReset} bgColor="bg-danger">REINCIAR GASTOS DEL MES</Button>
       </div>
     </main>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/component/Button";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -8,7 +9,7 @@ export function IncomeButton() {
   const [value, setValue] = useState(false);
 
   return (
-    <button
+    <Button
       className={twMerge("bg-danger p-5 rounded-xl text-white flex gap-3 justify-center transition-colors font-bold col-span-3", value && "bg-good text-black")}
       onClick={() => setValue(v => !v)}
       type="button">
@@ -16,7 +17,7 @@ export function IncomeButton() {
         value ? "INGRESO" : "EGRESO"
       }
       <input checked={value} type="checkbox" name="income" readOnly className="hidden" />
-    </button>
+    </Button>
   );
 }
 
