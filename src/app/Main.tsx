@@ -61,7 +61,7 @@ export default function Main({
           spend={spend.current}
         />
       </div>
-      <div className="pt-10 px-5 mx-auto max-w-[600px] w-full flex flex-col gap-3">
+      <div className="py-10 px-5 mx-auto max-w-[600px] w-full flex flex-col gap-3">
         <form
           onSubmit={onSubmit}
           className="grid grid-cols-6 gap-4 w-full"

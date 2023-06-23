@@ -48,7 +48,7 @@ export default function Header() {
     <header className="bg-secondary">
       <div className="grid grid-cols-[15%_1fr_15%] max-w-[800px] mx-auto py-2 h-[80px]">
         <Link
-          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center aspect-square md:aspect-auto"
+          className="bg-primary p-5 rounded-xl text-bold text-white text-center flex items-center gap-2 justify-center aspect-square sm:aspect-auto"
           href={"/profile"}
         >
           <Image src="/profile.svg" height={25} width={25} alt="profile" className="inline" />
@@ -57,7 +57,7 @@ export default function Header() {
         <h1 className="text-center text-4xl font-bold text-white flex justify-center gap-4 items-center"><span className="hidden md:inline">PRESUPUESTO</span> <Image alt="logo" src="/logo3.png" width={75} height={75} className="inline w-16 h-16" /></h1>
         <Button
           onClick={signOut}
-          className="flex items-center gap-2 justify-center aspect-square md:aspect-auto"
+          className="flex items-center gap-2 justify-center aspect-square sm:aspect-auto"
         ><Image src="/exit.svg" height={25} width={25} alt="profile" /><span className="hidden sm:inline">SALIR</span></Button>
       </div>
       {
