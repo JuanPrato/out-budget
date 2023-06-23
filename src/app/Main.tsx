@@ -11,12 +11,12 @@ export default function Main({
     current,
     total
   },
-  updateCurrent
-}: { values: { session: User, current: number, total: number }, updateCurrent: (current: number, value: number) => Promise<void> }) {
+  updateCurrent,
+  showHistory
+}: { values: { session: User, current: number, total: number }, updateCurrent: (current: number, value: number) => Promise<void>, showHistory: () => void }) {
 
   const form = useRef<HTMLFormElement>(null);
   const spend = useRef<number | undefined>(undefined);
-  const [isRemaining, setIsRemaining] = useState<boolean>(true);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,19 +45,13 @@ export default function Main({
     await updateCurrent(current - correction, correction);
   }
 
-  function getAcc() {
-    if (!isRemaining)
-      return total - current;
-    return current;
-  }
-
   return (
     <main className='flex flex-col bg-primary grow py-5'>
       <div className='relative w-full max-w-[450px] mx-auto'>
-        <Button bgColor="bg-secondary" className="absolute right-0 top-0 w-16 h-16 p-1 text-2xl z-20" onClick={() => setIsRemaining(r => !r)}>{isRemaining ? "🫗" : "🥛"}</Button>
+        <Button bgColor="bg-secondary" className="absolute right-0 top-0 w-16 h-16 p-1 text-2xl z-20" onClick={showHistory}>📖</Button>
         <Glass
           percentage={Math.ceil((current / total) * 100)}
-          current={getAcc()}
+          current={current}
           spend={spend.current}
         />
       </div>
@@ -72,7 +66,7 @@ export default function Main({
           <Button className="col-span-3" bgColor="bg-secondary">NUEVO</Button>
         </form>
         <Button bgColor="bg-warning" textColor="text-black" onClick={onUndo} disabled={!spend}>DESHACER</Button>
-        <Button onClick={onReset} bgColor="bg-danger">REINCIAR GASTOS DEL MES</Button>
+        <Button onClick={onReset} bgColor="bg-danger">REINCIAR GASTOS</Button>
       </div>
     </main>
   );

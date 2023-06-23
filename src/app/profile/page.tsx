@@ -6,7 +6,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 export default function SetValues() {
 
-  const { session, profile, updateProfile } = useSession();
+  const { session, profile, updateProfile, addHistory } = useSession();
   const router = useRouter();
   const params = useSearchParams();
   const [error, setError] = useState<string | undefined>();
@@ -40,6 +40,9 @@ export default function SetValues() {
         linked,
         current: newProfile ? total : undefined
       });
+      if (newProfile) {
+        await addHistory(total);
+      }
     } catch (e) {
       setError((e as Error).message);
       return;

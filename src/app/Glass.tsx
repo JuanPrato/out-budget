@@ -34,7 +34,6 @@ function getBudgetClasses(percentage: number) {
   }
 
   return `before:bottom-[${showP}%] after:bottom-[${showP}%] bg-${bg}`
-
 }
 
 export default function Glass({ percentage, current, spend }: { percentage: number, current: number, spend: number | undefined }) {
@@ -51,6 +50,6 @@ export default function Glass({ percentage, current, spend }: { percentage: numb
           key={randomBytes(32).toString()}>{spend * -1 >= 0 ? "" : "-"}{f.format(Math.abs(spend))}
         </p>
       }
-    </div>
+    </div >
   )
 }
