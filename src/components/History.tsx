@@ -9,7 +9,6 @@ export default function History({ getHistory, show, onClose }: { getHistory: () 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(show);
     if (!show) return;
     setLoading(true);
     getHistory().then(h => {

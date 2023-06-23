@@ -14,7 +14,7 @@ interface Props {
 export function Button({ onClick, children, disabled, bgColor, textColor, className, type }: Props) {
   return (
     <button
-      className={twMerge("bg-primary p-5 rounded-xl text-bold text-white w-full disabled:bg-opacity-60", bgColor, textColor, className)}
+      className={twMerge("bg-primary p-5 rounded-xl text-bold text-white w-full disabled:bg-opacity-60 font-bold", bgColor, textColor, className)}
       onClick={onClick}
       disabled={disabled}
       type={type}>

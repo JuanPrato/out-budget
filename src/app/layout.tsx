@@ -1,9 +1,6 @@
-import SessionProvider from "@/firebase/Context";
-import { twMerge } from 'tailwind-merge';
 import './globals.css'
-import { Comfortaa } from 'next/font/google'
-
-const comfortaa = Comfortaa({ subsets: ['latin'], preload: true });
+import { ThemeProvider } from "./ThemeContext";
+import Body from "./Body";
 
 export const metadata = {
   title: 'Nuestro presupuesto',
@@ -16,12 +13,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={twMerge(comfortaa.className, "h-screen w-screen overflow-hidden flex flex-col")}>
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-      </body>
+    <html lang="en" className="">
+      <ThemeProvider>
+        <Body>{children}</Body>
+      </ThemeProvider>
     </html>
   )
 }

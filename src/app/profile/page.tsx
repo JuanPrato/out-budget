@@ -3,6 +3,9 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/hook/useSession";
 import { FormEvent, useEffect, useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/Button";
+import { useTheme } from "@/hook/useTheme";
 
 export default function SetValues() {
 
@@ -11,6 +14,7 @@ export default function SetValues() {
   const params = useSearchParams();
   const [error, setError] = useState<string | undefined>();
 
+  const { dark, switchDarkMode } = useTheme();
   const newProfile = params.get("new") === "true";
 
   useEffect(() => {
@@ -53,33 +57,39 @@ export default function SetValues() {
   }
 
   return (
-    <div className="h-full w-full bg-primary grid place-items-center">
-      <form className="p-5 bg-secondary rounded-xl text-white" onSubmit={onSubtmit}>
-        {newProfile && <legend>Para continuar debes crear un perfil</legend>}
-        <button onClick={() => router.push("/")} type="button" className="bg-warning text-black px-2 py-1 rounded-xl font-bold ">ATRAS</button>
-        <label className="font-bold text-xl my-2 block">
-          PRESUPUESTO TOTAL*
-          <input type="text" placeholder="1500" className="p-2 rounded-lg font-semibold block text-black" name="total" defaultValue={profile?.total} />
-        </label>
-        <label className="font-bold text-xl my-2 block">
-          NOMBRE DE USUARIO*
-          <input
-            type="text"
-            placeholder="Juan"
-            className="p-2 rounded-lg font-semibold block text-black"
-            name="username"
-            defaultValue={profile?.username}
-          />
-        </label>
-        <label className="font-bold text-xl my-2 block">
-          COMPAÑERO <span className="text-sm text-gray-300">(opcional)</span>
-          <input type="text" placeholder="Usuario del compañero" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
-        </label>
-        {
-          <p className="text-warning text-lg font-semibold max-w-[14rem]">{error}</p>
-        }
-        <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">GUARDAR Y CONTINUAR</button>
-      </form>
+    <div className="h-full w-full bg-primary flex flex-col justify-center">
+      <div className="bg-secondary grid grid-cols-[15%_1fr_15%] p-2">
+        <Button onClick={() => router.push("/")} type="button" textColor="text-black">⬅</Button>
+        <h1 className="text-center text-4xl font-bold text-white flex justify-center gap-4 items-center"><span className="hidden md:inline">PRESUPUESTO</span> <Image alt="logo" src="/logo3.png" width={75} height={75} className="inline w-16 h-16" /></h1>
+        <Button onClick={switchDarkMode}>{dark ? "☀️" : "🌙"}</Button>
+      </div>
+      <div className="grow grid place-items-center">
+        <form className="p-5 flex flex-col gap-2 bg-secondary rounded-xl text-white" onSubmit={onSubtmit}>
+          {newProfile && <legend>Para continuar debes crear un perfil</legend>}
+          <label className="font-bold text-xl my-2 block">
+            PRESUPUESTO TOTAL*
+            <input type="text" placeholder="1500" className="p-2 rounded-lg font-semibold block text-black" name="total" defaultValue={profile?.total} />
+          </label>
+          <label className="font-bold text-xl my-2 block">
+            NOMBRE DE USUARIO*
+            <input
+              type="text"
+              placeholder="Juan"
+              className="p-2 rounded-lg font-semibold block text-black"
+              name="username"
+              defaultValue={profile?.username}
+            />
+          </label>
+          <label className="font-bold text-xl my-2 block">
+            COMPAÑERO <span className="text-sm text-gray-300">(opcional)</span>
+            <input type="text" placeholder="Usuario del compañero" className="p-2 rounded-lg font-semibold block text-black" name="linked" defaultValue={profile?.linked} />
+          </label>
+          {
+            <p className="text-warning text-lg font-semibold max-w-[14rem]">{error}</p>
+          }
+          <button className="bg-good text-black p-3 rounded-xl font-bold text-lg">GUARDAR Y CONTINUAR</button>
+        </form>
+      </div>
     </div>
   )
 }

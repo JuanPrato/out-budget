@@ -1,6 +1,7 @@
 import { priceF } from "@/utils/formatter";
 import { randomBytes } from "crypto";
 import { twMerge } from "tailwind-merge";
+import { Spend } from "./Main";
 
 enum BG_PERCETAGES {
   DEAD = 10,
@@ -38,7 +39,7 @@ function getBudgetClasses(percentage: number) {
 interface Props {
   percentage: number;
   current: number;
-  spend: { value: number } | undefined;
+  spend: Spend | undefined;
 }
 
 export default function Glass({ percentage, current, spend }: Props) {
@@ -52,7 +53,7 @@ export default function Glass({ percentage, current, spend }: Props) {
         spend !== undefined &&
         <p
           className={twMerge("absolute text-3xl font-semibold top-1/2 left-1/2 z-20 spend", spend.value <= 0 ? "text-green-700" : "text-red-600")}
-          key={spend.toString()}>{spend.value * -1 >= 0 ? "" : "-"}{priceF.format(Math.abs(spend.value))}
+          key={spend.id}>{spend.value * -1 >= 0 ? "" : "-"}{priceF.format(Math.abs(spend.value))}
         </p>
       }
     </div >

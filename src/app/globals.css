@@ -64,3 +64,24 @@
   }
 
 }
+
+:root {
+  --primary-ligth: #cd84f1;
+  --secondary-ligth: #7d5fff;
+
+  --primary-dark: #5758BB;
+  --secondary-dark: #1B1464;
+
+  --danger-ligth: "red";
+  --danger-dark: "red";
+}
+
+body {
+  --primary: var(--primary-ligth);
+  --secondary: var(--secondary-ligth);
+}
+
+body.dark {
+  --primary: var(--primary-dark);
+  --secondary: var(--secondary-dark);
+}
